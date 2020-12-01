@@ -1,8 +1,6 @@
 package main
 
-import (
-	"os"
-)
+import "os"
 
 func main() {
 	if err := run(); err != nil {

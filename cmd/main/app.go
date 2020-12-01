@@ -11,7 +11,7 @@ import (
 
 	"github.com/diazharizky/scheduler/internal/utils"
 	"github.com/diazharizky/scheduler/pkg/httphandler"
-	"github.com/diazharizky/scheduler/pkg/postgres"
+	"github.com/diazharizky/scheduler/pkg/postgresql"
 	"github.com/diazharizky/scheduler/pkg/server"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -32,15 +32,20 @@ func init() {
 	app.Action = func(c *cli.Context) error { return serve() }
 	app.Commands = []cli.Command{
 		{
-			Name:   "migrate",
+			Name:   "migrate-up",
 			Usage:  "Required when service initially running.",
-			Action: func(c *cli.Context) error { return migration() },
+			Action: func(c *cli.Context) error { return migrateUp() },
+		},
+		{
+			Name:   "migrate-down",
+			Usage:  "Undo all actions on last migrate up.",
+			Action: func(c *cli.Context) error { return migrateDown() },
 		},
 	}
 
 	httpHandler = &httphandler.HTTPHandler{
 		Cron: cron.New(cron.WithSeconds()),
-		DB: &postgres.PGInstance{
+		DB: &postgresql.PGInstance{
 			User:     server.Config.GetString("POSTGRES_USER"),
 			Password: server.Config.GetString("POSTGRES_PASSWORD"),
 			Host:     server.Config.GetString("POSTGRES_HOST"),
@@ -49,6 +54,7 @@ func init() {
 		},
 	}
 	httpHandler.DB.Open()
+	httpHandler.Cron.Start()
 }
 
 func run() (err error) {
@@ -73,15 +79,29 @@ func serve() error {
 	return <-errC
 }
 
-func migration() (err error) {
+func migrateUp() (err error) {
 	dsn := utils.GetDSN("postgres", server.Config.GetString("POSTGRES_USER"), server.Config.GetString("POSTGRES_PASSWORD"), server.Config.GetString("POSTGRES_HOST"), server.Config.GetInt("POSTGRES_PORT"), server.Config.GetString("POSTGRES_DATABASE"), false)
 	m, err := migrate.New("file://internal/migrations/postgres", dsn)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
 	}
 
 	if err := m.Up(); err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
+	}
+
+	return
+}
+
+func migrateDown() (err error) {
+	dsn := utils.GetDSN("postgres", server.Config.GetString("POSTGRES_USER"), server.Config.GetString("POSTGRES_PASSWORD"), server.Config.GetString("POSTGRES_HOST"), server.Config.GetInt("POSTGRES_PORT"), server.Config.GetString("POSTGRES_DATABASE"), false)
+	m, err := migrate.New("file://internal/migrations/postgres", dsn)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	if err := m.Down(); err != nil {
+		log.Fatal(err.Error())
 	}
 
 	return

@@ -8,12 +8,12 @@ type Job struct {
 	Name     string       `json:"name"`
 	Schedule string       `json:"schedule"`
 	Action   string       `json:"action"`
-	Live     string       `json:"live"`
-	Status   string       `json:"status"`
+	Live     string       `json:"live,omitempty"`
+	Status   string       `json:"status,omitempty"`
 }
 
-// DBAdapter interface
+// DBAdapter interface for any database instance
 type DBAdapter interface {
 	Open() error
-	CreateSchedule() error
+	CreateSchedule(j *Job)
 }

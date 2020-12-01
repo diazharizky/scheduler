@@ -2,7 +2,6 @@ package httphandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -26,16 +25,22 @@ func (h *HTTPHandler) createSchedule() http.HandlerFunc {
 		var job definitions.Job
 		json.NewDecoder(r.Body).Decode(&job)
 		job.Status = pendingStatus
+
 		jobID, err := h.Cron.AddFunc(job.Schedule, func() {
-			fmt.Println("Every hour on the half hour")
+			http.Get(job.Action)
+
 			if job.Live == "once" {
 				h.Cron.Remove(job.EntryID)
 			}
 		})
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err.Error())
 		}
+
 		job.EntryID = jobID
+
+		h.DB.CreateSchedule(&job)
+
 		json.NewEncoder(w).Encode(job)
 	}
 }
