@@ -25,7 +25,7 @@ func (p *PGInstance) Open() error {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", p.Host, p.Port, p.User, p.Password, p.Database)
 	conn, err := sqlx.Connect("pgx", dsn)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatal(err.Error())
 	}
 	p.Conn = conn
 

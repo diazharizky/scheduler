@@ -1,8 +1,6 @@
 package postgresql
 
-import (
-	"github.com/diazharizky/scheduler/internal/definitions"
-)
+import "github.com/diazharizky/scheduler/internal/definitions"
 
 const table = "jobs"
 

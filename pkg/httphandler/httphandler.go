@@ -13,8 +13,8 @@ type HTTPHandler struct {
 }
 
 // Handler returns mountable http handler
-func (h *HTTPHandler) Handler() *chi.Mux {
-	r := chi.NewRouter()
+func (h *HTTPHandler) Handler() (r *chi.Mux) {
+	r = chi.NewRouter()
 	r.Mount(h.scheduleRouter())
 
 	return r

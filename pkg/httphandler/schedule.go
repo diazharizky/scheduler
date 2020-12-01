@@ -38,16 +38,8 @@ func (h *HTTPHandler) createSchedule() http.HandlerFunc {
 		}
 
 		job.EntryID = jobID
-
 		h.DB.CreateSchedule(&job)
 
 		json.NewEncoder(w).Encode(job)
-	}
-}
-
-func (h *HTTPHandler) loadSchedules() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var jobs []definitions.Job
-		json.NewEncoder(w).Encode(jobs)
 	}
 }

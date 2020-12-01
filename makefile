@@ -8,4 +8,4 @@ migrate-down:
 	go run cmd/main/*.go migrate-down
 
 run-db:
-	cd build/docker; docker-compose up -d postgres
+	cd build/docker; docker-compose up -d postgres pgadmin
