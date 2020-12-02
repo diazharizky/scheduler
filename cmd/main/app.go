@@ -9,15 +9,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/diazharizky/scheduler/internal/utils"
 	"github.com/diazharizky/scheduler/pkg/httphandler"
 	"github.com/diazharizky/scheduler/pkg/postgresql"
 	"github.com/diazharizky/scheduler/pkg/server"
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/robfig/cron/v3"
 	"github.com/urfave/cli"
+
+	// Test import
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 var app *cli.App
@@ -80,29 +79,13 @@ func serve() error {
 }
 
 func migrateUp() (err error) {
-	dsn := utils.GetDSN("postgres", server.Config.GetString("POSTGRES_USER"), server.Config.GetString("POSTGRES_PASSWORD"), server.Config.GetString("POSTGRES_HOST"), server.Config.GetInt("POSTGRES_PORT"), server.Config.GetString("POSTGRES_DATABASE"), false)
-	m, err := migrate.New("file://internal/migrations/postgres", dsn)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	if err := m.Up(); err != nil {
-		log.Fatal(err.Error())
-	}
+	err = httpHandler.DB.MigrateUp()
 
 	return
 }
 
 func migrateDown() (err error) {
-	dsn := utils.GetDSN("postgres", server.Config.GetString("POSTGRES_USER"), server.Config.GetString("POSTGRES_PASSWORD"), server.Config.GetString("POSTGRES_HOST"), server.Config.GetInt("POSTGRES_PORT"), server.Config.GetString("POSTGRES_DATABASE"), false)
-	m, err := migrate.New("file://internal/migrations/postgres", dsn)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	if err := m.Down(); err != nil {
-		log.Fatal(err.Error())
-	}
+	err = httpHandler.DB.MigrateDown()
 
 	return
 }
