@@ -13,9 +13,9 @@ import (
 
 const (
 	path             = "/jobs"
+	paramJobID       = "job_id"
 	statusRunning    = "running"
 	statusTerminated = "terminated"
-	paramJobID       = "job_id"
 	liveOnce         = "once"
 )
 
@@ -35,9 +35,10 @@ func (h *HTTPHandler) getRunningJobs() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobs, err := h.DB.GetRunningJobs()
 		if err != nil {
-			log.Print(err.Error())
+			log.Println(err.Error())
 		}
 
+		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(jobs)
 	}
 }
@@ -52,9 +53,10 @@ func (h *HTTPHandler) getJob() http.HandlerFunc {
 
 		job, err := h.DB.GetJob(jobIDInt)
 		if err != nil {
-			log.Print(err.Error())
+			log.Println(err.Error())
 		}
 
+		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(job)
 	}
 }
@@ -70,7 +72,7 @@ func (h *HTTPHandler) createJob() http.HandlerFunc {
 				h.Cron.Remove(job.EntryID)
 				err := h.DB.UpdateJobStatus(statusTerminated, job.ID)
 				if err != nil {
-					log.Print(err.Error())
+					log.Println(err.Error())
 				}
 			}
 		})
@@ -86,6 +88,7 @@ func (h *HTTPHandler) createJob() http.HandlerFunc {
 
 		job.ID = jobID
 
+		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(job)
 	}
 }
