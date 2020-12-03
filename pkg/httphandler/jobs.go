@@ -11,16 +11,22 @@ import (
 	"github.com/go-chi/chi"
 )
 
-const runningStatus = "running"
-const terminatedStatus = "terminated"
+const (
+	statusRunning    = "running"
+	statusTerminated = "terminated"
+	paramJobID       = "job_id"
+)
 
-func (h *HTTPHandler) scheduleRouter() (path string, r chi.Router) {
+func (h *HTTPHandler) jobsRouter() (path string, r chi.Router) {
 	path = "/jobs"
 
 	r = chi.NewRouter()
 	r.Get("/", h.getRunningJobs())
 	r.Post("/", h.createJob())
-	r.Delete("/{job_id}", h.stopJob())
+
+	pathWithID := fmt.Sprintf(`/{%s}`, paramJobID)
+	r.Get(pathWithID, h.getJob())
+	r.Delete(pathWithID, h.stopJob())
 
 	return
 }
@@ -36,17 +42,33 @@ func (h *HTTPHandler) getRunningJobs() http.HandlerFunc {
 	}
 }
 
+func (h *HTTPHandler) getJob() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		jobIDParam := chi.URLParam(r, paramJobID)
+		jobIDInt, err := strconv.ParseInt(jobIDParam, 10, 64)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		job, err := h.DB.GetJob(jobIDInt)
+		if err != nil {
+			log.Print(err.Error())
+		}
+
+		json.NewEncoder(w).Encode(job)
+	}
+}
+
 func (h *HTTPHandler) createJob() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var job definitions.Job
 		json.NewDecoder(r.Body).Decode(&job)
-		job.Status = runningStatus
+		job.Status = statusRunning
 		entryID, err := h.Cron.AddFunc(job.Schedule, func() {
 			http.Get(job.Action)
-
 			if job.Live == "once" {
 				h.Cron.Remove(job.EntryID)
-				err := h.DB.UpdateJobStatus(terminatedStatus, job.ID)
+				err := h.DB.UpdateJobStatus(statusTerminated, job.ID)
 				if err != nil {
 					log.Print(err.Error())
 				}
@@ -70,13 +92,19 @@ func (h *HTTPHandler) createJob() http.HandlerFunc {
 
 func (h *HTTPHandler) stopJob() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		jobIDParam := chi.URLParam(r, "job_id")
+		jobIDParam := chi.URLParam(r, paramJobID)
 		jobIDInt, err := strconv.ParseInt(jobIDParam, 10, 64)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
 
-		err = h.DB.UpdateJobStatus(terminatedStatus, jobIDInt)
+		job, err := h.DB.GetJob(jobIDInt)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		h.Cron.Remove(job.EntryID)
+		err = h.DB.UpdateJobStatus(statusTerminated, jobIDInt)
 		if err != nil {
 			log.Fatal(err.Error())
 		}

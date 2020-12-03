@@ -6,12 +6,24 @@ import (
 	"github.com/diazharizky/scheduler/internal/definitions"
 )
 
-const table = "jobs"
+const (
+	table         = "jobs"
+	fields        = "job_id, entry_id, name, schedule, action, live, status"
+	statusRunning = "running"
+)
 
 // GetRunningJobs func
 func (p *PGInstance) GetRunningJobs() (jobs []definitions.Job, err error) {
-	query := fmt.Sprintf(`SELECT job_id, entry_id, name, schedule, action, live, status FROM %s WHERE status = 'running'`, table)
-	err = p.Conn.Select(&jobs, query)
+	query := fmt.Sprintf(`SELECT %s FROM %s WHERE status = $1`, fields, table)
+	err = p.Conn.Select(&jobs, query, statusRunning)
+
+	return
+}
+
+// GetJob func
+func (p *PGInstance) GetJob(jobID int64) (job definitions.Job, err error) {
+	query := fmt.Sprintf(`SELECT %s FROM %s WHERE job_id = $1`, fields, table)
+	err = p.Conn.Get(&job, query, jobID)
 
 	return
 }

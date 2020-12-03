@@ -19,6 +19,7 @@ type DBAdapter interface {
 	MigrateDown() error
 	Open()
 	GetRunningJobs() ([]Job, error)
+	GetJob(jobID int64) (Job, error)
 	CreateJob(job *Job) (int64, error)
 	UpdateJobStatus(status string, jobID int64) error
 }
