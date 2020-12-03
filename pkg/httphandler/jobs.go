@@ -12,15 +12,15 @@ import (
 )
 
 const (
+	path             = "/jobs"
 	statusRunning    = "running"
 	statusTerminated = "terminated"
 	paramJobID       = "job_id"
+	liveOnce         = "once"
 )
 
-func (h *HTTPHandler) jobsRouter() (path string, r chi.Router) {
-	path = "/jobs"
-
-	r = chi.NewRouter()
+func (h *HTTPHandler) jobsRouter() (string, chi.Router) {
+	r := chi.NewRouter()
 	r.Get("/", h.getRunningJobs())
 	r.Post("/", h.createJob())
 
@@ -28,7 +28,7 @@ func (h *HTTPHandler) jobsRouter() (path string, r chi.Router) {
 	r.Get(pathWithID, h.getJob())
 	r.Delete(pathWithID, h.stopJob())
 
-	return
+	return path, r
 }
 
 func (h *HTTPHandler) getRunningJobs() http.HandlerFunc {
@@ -66,7 +66,7 @@ func (h *HTTPHandler) createJob() http.HandlerFunc {
 		job.Status = statusRunning
 		entryID, err := h.Cron.AddFunc(job.Schedule, func() {
 			http.Get(job.Action)
-			if job.Live == "once" {
+			if job.Live == liveOnce {
 				h.Cron.Remove(job.EntryID)
 				err := h.DB.UpdateJobStatus(statusTerminated, job.ID)
 				if err != nil {
