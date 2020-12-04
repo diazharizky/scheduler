@@ -24,3 +24,9 @@ services:
       - "${PGADMIN_PORT:-5050}:80"
     depends_on:
       - postgres
+
+  scheduler:
+    build:
+      context: ../../
+      dockerfile: ./build/docker/Dockerfile
+    image: "diazharizky/scheduler:1.0.0"

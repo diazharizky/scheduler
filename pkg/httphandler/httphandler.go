@@ -1,7 +1,6 @@
 package httphandler
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"github.com/diazharizky/scheduler/internal/definitions"
 	"github.com/ghodss/yaml"
 	"github.com/go-chi/chi"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/robfig/cron/v3"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -36,12 +36,14 @@ func (h *HTTPHandler) Handler() (r *chi.Mux) {
 func swaggerSource() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		pwd, _ := os.Getwd()
-		yamlFile, err := ioutil.ReadFile(pwd + "/configs/swagger.yml")
+		configPath := pwd + "/configs/"
+		box := packr.New("configs", configPath)
+		yamlFile, err := box.FindString("swagger.yml")
 		if err != nil {
-			log.Println(err.Error())
+			log.Fatal(err)
 		}
 
-		swaggerDocs, err := yaml.YAMLToJSON(yamlFile)
+		swaggerDocs, err := yaml.YAMLToJSON([]byte(yamlFile))
 		if err != nil {
 			log.Println(err.Error())
 		}
