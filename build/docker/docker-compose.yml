@@ -1,27 +1,27 @@
 version: "3.4"
 services:
   postgres:
-    image: "postgres:9.6"
-    restart: "unless-stopped"
+    image: postgres:9.6
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=scheduler
       - POSTGRES_PASSWORD=scheduler
       - POSTGRES_DB=scheduler
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
-      - "../../volumes/postgres:/var/lib/postgresql/data"
+      - ../../volumes/postgres:/var/lib/postgresql/data
 
   pgadmin:
-    image: "dpage/pgadmin4"
+    image: dpage/pgadmin4
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-      - "../../volumes/pgadmin:/var/lib/pgadmin"
+      - ../../volumes/pgadmin:/var/lib/pgadmin
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - ${PGADMIN_PORT:-5050}:80
     depends_on:
       - postgres
 
@@ -29,4 +29,42 @@ services:
     build:
       context: ../../
       dockerfile: ./build/docker/Dockerfile
-    image: "diazharizky/scheduler:1.0.0"
+    image: diazharizky/scheduler
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    environment:
+      - SERVER_IP
+      - SERVER_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_DATABASE
+
+  generator:
+    image: rucciva/golang:1.15.2-alpine
+    environment:
+      - GOCACHE=/go/build
+    volumes:
+      - ../../:${PWD}/../..
+      - ${GOPATH}/pkg:/go/pkg
+      - ${GOPATH}/build:/go/build
+    working_dir: ${PWD}/../..
+    entrypoint: /bin/sh -c
+    command:
+      - make generate
+
+  builder:
+    image: rucciva/golang:1.15.2-alpine
+    environment:
+      - GOCACHE=/go/build
+    volumes:
+      - ../../:${PWD}/../..
+      - ${GOPATH}/pkg:/go/pkg
+      - ${GOPATH}/build:/go/build
+    working_dir: ${PWD}/../..
+    entrypoint: /bin/sh -c
+    command:
+      - make build

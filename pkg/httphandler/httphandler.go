@@ -3,14 +3,11 @@ package httphandler
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/diazharizky/scheduler/internal/definitions"
-	"github.com/ghodss/yaml"
 	"github.com/go-chi/chi"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/robfig/cron/v3"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // HTTPHandler contains mountable http handler
@@ -23,11 +20,7 @@ type HTTPHandler struct {
 func (h *HTTPHandler) Handler() (r *chi.Mux) {
 	r = chi.NewRouter()
 
-	swaggerSourcePath := "/swagger/source"
-	r.Get(swaggerSourcePath, swaggerSource())
-	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL(swaggerSourcePath),
-	))
+	r.Get("/swagger.json", swaggerSource())
 	r.Mount(h.jobsRouter())
 
 	return r
@@ -35,21 +28,14 @@ func (h *HTTPHandler) Handler() (r *chi.Mux) {
 
 func swaggerSource() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		pwd, _ := os.Getwd()
-		configPath := pwd + "/configs/"
-		box := packr.New("configs", configPath)
-		yamlFile, err := box.FindString("swagger.yml")
+		box := packr.New("api", "../../api/swagger-spec/")
+		swaggerSource, err := box.FindString("police.json")
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		swaggerDocs, err := yaml.YAMLToJSON([]byte(yamlFile))
-		if err != nil {
-			log.Println(err.Error())
-		}
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
-		w.Write(swaggerDocs)
+		w.Write([]byte(swaggerSource))
 	}
 }

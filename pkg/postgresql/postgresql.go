@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/diazharizky/scheduler/internal/utils"
-	"github.com/diazharizky/scheduler/pkg/server"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/jmoiron/sqlx"
 
@@ -35,7 +34,7 @@ func (p *PGInstance) Open() {
 
 // MigrateUp func
 func (p *PGInstance) MigrateUp() error {
-	dsn := utils.GetDSN("postgres", server.Config.GetString("POSTGRES_USER"), server.Config.GetString("POSTGRES_PASSWORD"), server.Config.GetString("POSTGRES_HOST"), server.Config.GetInt("POSTGRES_PORT"), server.Config.GetString("POSTGRES_DATABASE"), false)
+	dsn := utils.GetDSN("postgres", p.User, p.Password, p.Host, p.Port, p.Database, false)
 	m, err := migrate.New("file://internal/migrations/postgres", dsn)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -50,7 +49,7 @@ func (p *PGInstance) MigrateUp() error {
 
 // MigrateDown func
 func (p *PGInstance) MigrateDown() error {
-	dsn := utils.GetDSN("postgres", server.Config.GetString("POSTGRES_USER"), server.Config.GetString("POSTGRES_PASSWORD"), server.Config.GetString("POSTGRES_HOST"), server.Config.GetInt("POSTGRES_PORT"), server.Config.GetString("POSTGRES_DATABASE"), false)
+	dsn := utils.GetDSN("postgres", p.User, p.Password, p.Host, p.Port, p.Database, false)
 	m, err := migrate.New("file://internal/migrations/postgres", dsn)
 	if err != nil {
 		log.Fatal(err.Error())

@@ -1,20 +1,13 @@
-FROM golang:1.13-alpine as builder
+# Base Image for building
+# build is run with `docker-compose up generator && docker-compose up builder` for better caching with local gopath
+FROM rucciva/golang:1.15.2-alpine as base
 
-ARG git_tag
-ARG git_commit
+# Final Image
+# run `docker-compose up generator && docker-compose up builder` first
+FROM alpine:3.10.2
 
-RUN apk add --no-cache git build-base curl
-RUN go get -u github.com/gobuffalo/packr/v2/packr2
+RUN apk add --no-cache ca-certificates
 
-ADD . /go/src/github.com/diazharizky/scheduler 
-WORKDIR /go/src/github.com/diazharizky/scheduler
-RUN packr2
-RUN go mod vendor
-RUN go build github.com/diazharizky/scheduler
-RUN packr2 clean
+COPY bin/scheduler /usr/local/bin
 
-FROM alpine
-
-COPY --from=builder /go/src/github.com/diazharizky/scheduler/scheduler /usr/bin/scheduler
-
-ENTRYPOINT ["scheduler"]
+ENTRYPOINT /usr/local/bin/scheduler

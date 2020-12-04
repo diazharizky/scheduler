@@ -31,6 +31,16 @@ func (h *HTTPHandler) jobsRouter() (string, chi.Router) {
 	return path, r
 }
 
+// swagger:operation GET /jobs jobs
+//
+// Get current running jobs.
+//
+// ---
+// produces:
+// - application/json
+// responses:
+//   '200':
+//     description: Successful operation
 func (h *HTTPHandler) getRunningJobs() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobs, err := h.DB.GetRunningJobs()
@@ -43,6 +53,23 @@ func (h *HTTPHandler) getRunningJobs() http.HandlerFunc {
 	}
 }
 
+// swagger:operation GET /jobs/{job_id} jobs
+//
+// Get specific job.
+//
+// ---
+// produces:
+// - application/json
+// parameters:
+// - name: job_id
+//   in: path
+//   description: Retrieved from `/jobs`
+//   required: true
+//   type: integer
+//   format: int64
+// responses:
+//   '200':
+//     description: Successful operation
 func (h *HTTPHandler) getJob() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobIDParam := chi.URLParam(r, paramJobID)
@@ -61,6 +88,25 @@ func (h *HTTPHandler) getJob() http.HandlerFunc {
 	}
 }
 
+// swagger:operation POST /jobs jobs
+//
+// Add a new cron job.
+//
+// ---
+// consumes:
+// - application/json
+// produces:
+// - application/json
+// parameters:
+// - in: body
+//   name: body
+//   description: Job payload.
+//   required: true
+//   schema:
+//     $ref: "#/definitions/JobPayload"
+// responses:
+//   '200':
+//     description: "Successful operation"
 func (h *HTTPHandler) createJob() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var job definitions.Job
@@ -93,6 +139,23 @@ func (h *HTTPHandler) createJob() http.HandlerFunc {
 	}
 }
 
+// swagger:operation DELETE /jobs/{job_id} jobs
+//
+// Stop specific running/terminated job
+//
+// ---
+// produces:
+// - text/plain
+// parameters:
+// - name: job_id
+//   in: path
+//   description: Retrieved from `/jobs`
+//   required: true
+//   type: integer
+//   format: int64
+// responses:
+//   '200':
+//     description: Successful operation
 func (h *HTTPHandler) stopJob() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobIDParam := chi.URLParam(r, paramJobID)
