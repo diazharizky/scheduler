@@ -1,4 +1,4 @@
-.PHONY: build clean clean-packr
+.PHONY: build clean clean-packr generate
 
 run:
 	source .env; go run cmd/scheduler/*.go
@@ -13,7 +13,7 @@ run-db:
 	cd build/docker; docker-compose up -d postgres pgadmin
 
 generate:
-	go get -v ./... && go generate -v ./...
+	go generate -v ./... && go get -v ./...
 
 build:
 	for dir in `find ./cmd -name main.go -type f`; do \
@@ -21,7 +21,8 @@ build:
 	done
 
 clean:
-	rm -rf bin
+	rm -rf bin;
+	rm -rf api/swagger-spec/scheduler.json
 
 clean-packr:
 	cd cmd/scheduler &&\

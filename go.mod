@@ -4,6 +4,8 @@ go 1.14
 
 require (
 	github.com/ghodss/yaml v1.0.0
+	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
+	github.com/go-bindata/go-bindata/v3 v3.1.3 // indirect
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-openapi/spec v0.19.15 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
@@ -19,6 +21,7 @@ require (
 	github.com/jackc/pgx/v4 v4.9.2 // indirect
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
 	github.com/karrick/godirwalk v1.16.1 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
@@ -39,6 +42,7 @@ require (
 	golang.org/x/sys v0.0.0-20201202213521-69691e467435 // indirect
 	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1 // indirect
 	golang.org/x/tools v0.0.0-20201203230154-39497347062d // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )

@@ -1,11 +1,15 @@
+//go:generate go run -v github.com/go-bindata/go-bindata/v3/go-bindata -pkg postgresql -o bindata.go migration
+
 package postgresql
 
 import (
 	"fmt"
 	"log"
+	"path"
 
 	"github.com/diazharizky/scheduler/internal/utils"
 	"github.com/golang-migrate/migrate/v4"
+	bindata "github.com/golang-migrate/migrate/v4/source/go_bindata"
 	"github.com/jmoiron/sqlx"
 
 	// Below are the required drivers
@@ -25,6 +29,10 @@ type PGInstance struct {
 	Conn *sqlx.DB
 }
 
+const (
+	migrationDir = "migration"
+)
+
 // Open func
 func (p *PGInstance) Open() {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", p.Host, p.Port, p.User, p.Password, p.Database)
@@ -34,8 +42,22 @@ func (p *PGInstance) Open() {
 
 // MigrateUp func
 func (p *PGInstance) MigrateUp() error {
+	ls, err := AssetDir(migrationDir)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	i := bindata.Resource(ls, func(name string) ([]byte, error) {
+		return Asset(path.Join(migrationDir, name))
+	})
+
+	d, err := bindata.WithInstance(i)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	dsn := utils.GetDSN("postgres", p.User, p.Password, p.Host, p.Port, p.Database, false)
-	m, err := migrate.New("file://internal/migrations/postgres", dsn)
+	m, err := migrate.NewWithSourceInstance("go-bindata", d, dsn)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

@@ -7,8 +7,6 @@ services:
       - POSTGRES_USER=scheduler
       - POSTGRES_PASSWORD=scheduler
       - POSTGRES_DB=scheduler
-    ports:
-      - 5432:5432
     volumes:
       - ../../volumes/postgres:/var/lib/postgresql/data
 
@@ -31,7 +29,7 @@ services:
       dockerfile: ./build/docker/Dockerfile
     image: diazharizky/scheduler
     ports:
-      - 3000:3000
+      - 5000:3000
     depends_on:
       - postgres
     environment:
@@ -42,6 +40,18 @@ services:
       - POSTGRES_HOST
       - POSTGRES_PORT
       - POSTGRES_DATABASE
+
+  migrate:
+    image: diazharizky/scheduler:latest
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_DATABASE
+    command: migrate-up
 
   generator:
     image: rucciva/golang:1.15.2-alpine

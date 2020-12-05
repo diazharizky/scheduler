@@ -10,4 +10,4 @@ RUN apk add --no-cache ca-certificates
 
 COPY bin/scheduler /usr/local/bin
 
-ENTRYPOINT /usr/local/bin/scheduler
+ENTRYPOINT ["/usr/local/bin/scheduler"]
