@@ -11,7 +11,7 @@
 // there are no TOS at this moment, use at your own risk we take no responsibility
 //
 //     Schemes: http
-//     Host: scheduler:3000
+//     Host: 0.0.0.0:3000
 //     BasePath: /
 //     Version: 0.0.0
 //     Contact: Diaz Harizky<diazharizky@gmail.com>

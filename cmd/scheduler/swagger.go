@@ -4,8 +4,29 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/cors"
 	"github.com/gobuffalo/packr/v2"
 )
+
+func getAllowAllCORS() func(http.Handler) http.Handler {
+	return cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{
+			http.MethodGet,
+			http.MethodHead,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodPatch,
+			http.MethodDelete,
+			http.MethodConnect,
+			http.MethodOptions,
+			http.MethodTrace,
+		},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}).Handler
+}
 
 func swaggerHandler() (http.HandlerFunc, error) {
 	box := packr.New("api", "../../api/swagger-spec/")

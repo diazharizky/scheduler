@@ -76,12 +76,13 @@ func serve() error {
 
 		log.Println("{\"label\":\"server-http\",\"level\":\"info\",\"msg\":\"server worker started at pid " + strconv.Itoa(os.Getpid()) + " listening on " + net.JoinHostPort(serverIP, serverPort) + "\",\"service\":\"" + appName + "\",\"time\":" + fmt.Sprint(time.Now().Format(time.RFC3339Nano)) + "\"}")
 
-		h := httpHandler.Handler()
+		httpHandler.Middlewares = append(httpHandler.Middlewares, getAllowAllCORS())
 		sh, err := swaggerHandler()
 		if err != nil {
 			log.Fatal(err.Error())
 		}
 
+		h := httpHandler.Handler()
 		h.Mount("/swagger.json", sh)
 		http.ListenAndServe(net.JoinHostPort(serverIP, serverPort), h)
 	}()

@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/go-bindata/go-bindata/v3 v3.1.3 // indirect
 	github.com/go-chi/chi v4.1.2+incompatible
+	github.com/go-chi/cors v1.1.1
 	github.com/go-swagger/go-swagger v0.25.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.8.1
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
