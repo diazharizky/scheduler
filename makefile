@@ -1,4 +1,4 @@
-.PHONY: build clean clean-packr generate
+.PHONY: run migrate-up migrate-down generate build clean clean-packr
 
 run:
 	source .env; go run cmd/scheduler/*.go

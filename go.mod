@@ -3,46 +3,30 @@ module github.com/diazharizky/scheduler
 go 1.14
 
 require (
-	github.com/ghodss/yaml v1.0.0
-	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/go-bindata/go-bindata/v3 v3.1.3 // indirect
 	github.com/go-chi/chi v4.1.2+incompatible
-	github.com/go-openapi/spec v0.19.15 // indirect
-	github.com/go-sql-driver/mysql v1.5.0
 	github.com/go-swagger/go-swagger v0.25.0 // indirect
-	github.com/gobuffalo/envy v1.9.0 // indirect
-	github.com/gobuffalo/packr v1.30.1 // indirect
 	github.com/gobuffalo/packr/v2 v2.8.1
-	github.com/golang-migrate/migrate v3.5.4+incompatible
+	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/golang-migrate/migrate/v4 v4.14.1
-	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
-	github.com/hashicorp/golang-lru v0.5.1 // indirect
+	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible
-	github.com/jackc/pgx/v4 v4.9.2 // indirect
-	github.com/jasonlvhit/gocron v0.0.1
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
 	github.com/karrick/godirwalk v1.16.1 // indirect
-	github.com/magiconair/properties v1.8.4 // indirect
-	github.com/mitchellh/mapstructure v1.4.0 // indirect
-	github.com/pelletier/go-toml v1.8.1 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rogpeppe/go-internal v1.6.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/spf13/afero v1.4.1 // indirect
-	github.com/spf13/cobra v1.1.1 // indirect
-	github.com/spf13/viper v1.7.1
-	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
-	github.com/swaggo/swag v1.6.9 // indirect
+	github.com/shopspring/decimal v0.0.0-20200227202807-02e2044944cc // indirect
+	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/urfave/cli v1.22.5
-	go.uber.org/multierr v1.5.0 // indirect
-	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c // indirect
-	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
+	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 // indirect
 	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb // indirect
-	golang.org/x/sys v0.0.0-20201202213521-69691e467435 // indirect
-	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1 // indirect
-	golang.org/x/tools v0.0.0-20201203230154-39497347062d // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
-	gopkg.in/ini.v1 v1.62.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0
+	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a // indirect
+	golang.org/x/sys v0.0.0-20201207223542-d4d67f95c62d // indirect
+	golang.org/x/term v0.0.0-20201207232118-ee85cb95a76b // indirect
+	golang.org/x/text v0.3.4 // indirect
+	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )

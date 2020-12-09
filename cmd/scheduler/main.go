@@ -1,4 +1,5 @@
 //go:generate go run -v github.com/go-swagger/go-swagger/cmd/swagger generate spec -m -o ../../api/swagger-spec/scheduler.json
+//go:generate go run -v github.com/gobuffalo/packr/v2/packr2
 
 // Package main Scheduler.
 //
