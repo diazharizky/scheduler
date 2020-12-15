@@ -1,3 +1,5 @@
 /volumes
 /bin
 /api
+/cmd/scheduler/main-packr.go
+/cmd/scheduler/packrd
